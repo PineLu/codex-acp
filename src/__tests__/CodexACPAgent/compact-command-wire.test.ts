@@ -43,6 +43,8 @@ describe.each([1, 2] as const)("/compact completion over ACP v%s", version => {
         await client.promptRunFinished(1);
         await settle();
 
+        // A pending workspace config/read may let the finished compact prompt reply
+        // before the next turn/start; the no-overlap assertions above remain authoritative.
         const timeline = client.transcript.flatMap(entry => {
             if ("codexNotification" in entry) return [entry.codexNotification];
             if ("codexRequest" in entry) return [entry.codexRequest];
